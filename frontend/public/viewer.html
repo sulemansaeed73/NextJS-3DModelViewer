@@ -1,0 +1,67 @@
+<!-- viewer.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forge Viewer</title>
+  <link
+    rel="stylesheet"
+    href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css"
+    type="text/css"
+  />
+  <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
+</head>
+<body>
+  <div id="MyViewerDiv">
+  </div>
+
+  <script>
+    window.addEventListener('load', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urn = urlParams.get('urn');
+      const accessToken = localStorage.getItem("Forge3d");
+
+      if (!urn || !accessToken) {
+        console.error('URN or AccessToken missing!');
+        return;
+      }
+
+      const options = {
+        env: 'AutodeskProduction',
+        api: 'derivativeV2',
+        getAccessToken: (callback) => {
+          callback(accessToken, 3600); // Pass token and expiration
+        },
+      };
+
+      const viewerDiv = document.getElementById('MyViewerDiv');
+
+      Autodesk.Viewing.Initializer(options, function () {
+        const viewer = new Autodesk.Viewing.GuiViewer3D(viewerDiv);
+        viewer.start();
+        
+     
+        Autodesk.Viewing.Document.load(
+          `urn:${urn}`,
+          function (doc) {
+
+    //         const geometryList = doc.getRoot().search({ type: "geometry" });
+    // if (geometryList.length > 0) {
+    //   viewer.loadDocumentNode(doc, geometryList[0]); 
+    // }
+
+            const viewable = doc.getRoot().getDefaultGeometry();
+            if (viewable) {
+              viewer.loadDocumentNode(doc, viewable);
+            }
+          },
+          function (error) {
+            console.error('Error loading document: ', error);
+          }
+        );
+      });
+    });
+  </script>
+</body>
+</html>

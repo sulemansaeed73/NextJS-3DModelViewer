@@ -2,8 +2,6 @@
 import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import MobileView from "@/components/assets/MobileView.jpg";
-import LaptopView from "@/components/assets/LaptopView.png";
 function LandingPage() {
   const router = useRouter();
   return (
@@ -11,19 +9,23 @@ function LandingPage() {
     <div className="relative">
       <Image
         className="hidden md:block w-full h-[600px] object-cover lg:object-fill"
-        src={LaptopView}
+        src={'/assets/room.jpg'}
+        width={4096}
+        height={2296}
         alt="LandingPic"
       />
 
       <Image
         className="md:hidden w-full h-[600px] object-cover lg:object-fill"
-        src={MobileView}
+        src={'/assets/room.jpg'}
         alt="LandingPic"
+        width={4096}
+        height={2296}
       />
   
       <div className="absolute inset-0 flex flex-col items-center md:items-start justify-center p-6 bg-black/50">
         <p className="max-w-sm md:w-1/2 lg:w-1/3 text-[2rem] md:text-[2.1rem] font-medium text-[#F8FAFC] leading-snug tracking-wide bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl shadow-xl text-center md:text-left">
-          Explore Your Designs in <span className="text-[#ff2323]">2D & 3D</span>
+          Explore Your Designs in <span className="text-[#4b32bd]">2D & 3D</span>
         </p>
   
         <button

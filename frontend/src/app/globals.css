@@ -2,17 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* :root {
   --background: #ffffff;
+  --foreground: #171717;
+} */
+ :root {
+  --background: #1E293B;
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
+
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 .search-page input,
 .search-page select {
@@ -34,7 +39,8 @@ body {
   overflow: hidden;
   padding: 10px;
   background: #111;
-  color: #0ff;
+  /* color: #0ff; */
+  color: aliceblue;
   border-radius: 15px;
   transition: all 0.5s ease;
   font-size: 1rem;

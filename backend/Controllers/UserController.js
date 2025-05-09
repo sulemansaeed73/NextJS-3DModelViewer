@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 module.exports = {
   async Login(req, res) {
     const { email, password, rememberMe } = req.body;
-    const emailRegex = /^(?:[a-zA-Z0-9]+@(gmail\.com|proton\.me))$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (email && !emailRegex.test(email)) {
       return res.status(400).json("Invalid Email Syntax");
     }
@@ -50,25 +50,27 @@ module.exports = {
   },
 
   async Signup(req, res) {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email is already taken" });
-    }
     try {
-      const user = new User(req.body);
-      const emailRegex = /^(?:[a-zA-Z0-9]+@(gmail\.com|proton\.me))$/;
-      if (user.email && !emailRegex.test(user.email)) {
-        return res.status(400).json("Invalid Email Syntax");
+      const { username, email, password } = req.body;
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: "Invalid Email Syntax" });
       }
 
-      if (user && !same_email) {
-        const result = await user.save();
-        return res.status(200).json(result);
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(409).json({ message: "Email is already taken" });
       }
+
+      const newUser = new User({ username, email, password });
+      const savedUser = await newUser.save();
+
+      res.status(200).json({ message: savedUser });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (error.code === 11000) {
-        res.status(400).json({ message: "Email is already taken" });
+        res.status(409).json({ message: "Email is already taken" });
       } else {
         res.status(500).json({ message: "Server error" });
       }
@@ -79,7 +81,7 @@ module.exports = {
     const token = req.cookies.user;
     if (token) {
       return res.status(200).json("Logged IN");
-    } 
+    }
   },
 
   async CheckEmail(req, res) {

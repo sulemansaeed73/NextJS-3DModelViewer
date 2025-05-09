@@ -8,36 +8,39 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { LoginContext } from "@/context/AuthContext";
-
 import { useForm } from "react-hook-form";
 
 function SignupPage() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
 
-  const [message, setMessage] = useState("");
   const [emailStatus, setEmailStatus] = useState("");
-
+  const [message, setMessage] = useState("");
   const router = useRouter();
   const { login } = useContext(LoginContext);
 
+  const password = watch("password");
+
   async function UserSignup(data) {
-    let user = {
+    const user = {
       username: data.username,
       email: data.email,
       password: data.password,
     };
+
     try {
-      const response = await axios.post("http://localhost:5000/check-email", {
+      await axios.post("http://localhost:5000/check-email", {
         email: data.email,
       });
     } catch (error) {
       setEmailStatus("Email Already Taken");
       return;
     }
+
     try {
       const response = await axios.post("http://localhost:5000/signup", user, {
         headers: {
@@ -47,140 +50,133 @@ function SignupPage() {
       });
 
       if (response.status === 200) {
-        toast.success("Signed Up Sucessfully", { autoClose: 1500 });
-
+        toast.success("Signed Up Successfully", { autoClose: 1500 });
         login(response.data.message.username);
-        router.push("/");
+        router.push("/login");
       }
     } catch (error) {
-      if (error.response) {
-        if (error.response.status === 409) {
-          setMessage("Email Already Taken");
-          return;
-        }
+      if (error.response?.status === 409) {
+        setMessage("Email Already Taken");
       } else {
         toast.error("Error Signing Up! Try Again", { autoClose: 1500 });
-        return;
       }
     }
   }
 
   return (
-    <div>
-      <div className="flex flex-col md:flex-row m-10 md:mx-16 lg:mx-28 lg:my-18 border-[2px] rounded-lg ">
+    <div className="bg-[#1E293B] min-h-screen flex items-center justify-center px-4">
+      <div className="flex flex-col md:flex-row w-full max-w-4xl h-[450px] border border-gray-600 rounded-md overflow-hidden shadow-md">
         <ToastContainer />
-        <div className="p-4 flex-1">
-          <h2 className="text-center text-3xl text-gray-800">Create Account</h2>
-          <form
-            className="flex flex-col p-4 md:p-4 lg:p-16"
-            onSubmit={handleSubmit(UserSignup)}
-          >
-            <label className="flex p-1 border">
-              <FaRegUser className="text-gray-400 mt-2.5" />
 
-              <input
-                className="p-2 w-full focus:outline-none"
-                type="text"
-                placeholder="Name"
-                {...register("username", {
-                  required: "Username is required",
-                  minLength: {
-                    value: 3,
-                    message: "Username must be at least 3 characters",
-                  },
-                })}
-              />
-            </label>
-            {errors.username && (
-              <p className="font-thin text-sm text-red-600">
-                {errors.username.message}
-              </p>
-            )}
+        <div className="w-full md:w-1/2 bg-[#1E293B] p-8 md:p-12">
+          <h2 className="text-center text-3xl text-white font-semibold mb-8">
+            Create Account
+          </h2>
 
-            <label className="flex p-1 border mt-4">
-              <MdEmail className="text-gray-400 mt-2.5" />
-              <input
-                className="w-full p-2 focus:outline-none"
-                type="text"
-                placeholder="Email"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^(?:[a-zA-Z0-9]+@(gmail\.com|proton\.me))$/,
-                    message: "Invalid email address",
-                  },
-                })}
-              />
-            </label>
+          <form onSubmit={handleSubmit(UserSignup)} className="space-y-5">
+            <div>
+              <label className="flex items-center gap-2 bg-[#334155] text-white px-3 py-2 rounded-md">
+                <FaRegUser className="text-gray-400" />
+                <input
+                  className="w-full bg-transparent outline-none placeholder:text-gray-400"
+                  type="text"
+                  placeholder="Name"
+                  {...register("username", {
+                    required: "Username is required",
+                    minLength: {
+                      value: 3,
+                      message: "Username must be at least 3 characters",
+                    },
+                  })}
+                />
+              </label>
+              {errors.username && (
+                <p className="text-sm text-red-400 mt-1">{errors.username.message}</p>
+              )}
+            </div>
 
-            {emailStatus && (
-              <p className="font-thin text-sm text-red-600">
-                Email Already Taken
-              </p>
-            )}
-            {errors.email && (
-              <p className="font-thin text-sm text-red-600">
-                {errors.email.message}
-              </p>
-            )}
-            <label className="flex p-1 border mt-4">
-              <RiLockPasswordLine className="text-gray-400 mt-2.5" />
-              <input
-                className="w-full p-2 focus:outline-none"
-                type="password"
-                placeholder="Password"
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: {
-                    value: 6,
-                    message: "Password must be at least 6 characters",
-                  },
-                })}
-              />
-            </label>
-            {errors.password && (
-              <p className="font-thin text-sm text-red-600">
-                {errors.password.message}
-              </p>
-            )}
-            <label className="flex p-1 border mt-4">
-              <RiLockPasswordLine className="text-gray-400 mt-2.5" />
-              <input
-                className="w-full p-2 focus:outline-none"
-                type="password"
-                placeholder="Confirm Password"
-                {...register("confirmPassword", {
-                  required: "Please confirm your password",
-                  validate: (value, { password }) =>
-                    value === password || "Passwords do not match",
-                })}
-              />
-            </label>
-            {errors.confirmPassword && (
-              <p className="font-thin text-sm text-red-600">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-            <button className="rounded bg-teal-500 text-white font-mono p-2 mt-4 mb-4">
+            <div>
+              <label className="flex items-center gap-2 bg-[#334155] text-white px-3 py-2 rounded-md">
+                <MdEmail className="text-gray-400" />
+                <input
+                  className="w-full bg-transparent outline-none placeholder:text-gray-400"
+                  type="text"
+                  placeholder="Email"
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value:  /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "Invalid email address",
+                    },
+                  })}
+                />
+              </label>
+              {emailStatus && (
+                <p className="text-sm text-red-400 mt-1">{emailStatus}</p>
+              )}
+              {errors.email && (
+                <p className="text-sm text-red-400 mt-1">{errors.email.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="flex items-center gap-2 bg-[#334155] text-white px-3 py-2 rounded-md">
+                <RiLockPasswordLine className="text-gray-400" />
+                <input
+                  className="w-full bg-transparent outline-none placeholder:text-gray-400"
+                  type="password"
+                  placeholder="Password"
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters",
+                    },
+                  })}
+                />
+              </label>
+              {errors.password && (
+                <p className="text-sm text-red-400 mt-1">{errors.password.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="flex items-center gap-2 bg-[#334155] text-white px-3 py-2 rounded-md">
+                <RiLockPasswordLine className="text-gray-400" />
+                <input
+                  className="w-full bg-transparent outline-none placeholder:text-gray-400"
+                  type="password"
+                  placeholder="Confirm Password"
+                  {...register("confirmPassword", {
+                    required: "Please confirm your password",
+                    validate: (value) =>
+                      value === password || "Passwords do not match",
+                  })}
+                />
+              </label>
+              {errors.confirmPassword && (
+                <p className="text-sm text-red-400 mt-1">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
+            </div>
+
+            <button className="w-full bg-gray-900 hover:bg-gray-700 text-white font-semibold py-2 rounded-md transition-all">
               SIGN UP
             </button>
             {message && (
-              <span className="font-semibold text-center text-red-600">
-                {message}
-              </span>
+              <p className="text-sm text-red-400 text-center mt-2">{message}</p>
             )}
           </form>
         </div>
-        <div className="hidden md:flex flex-col flex-1 items-center justify-center bg-teal-400 p-4 gap-4 rounded-sm">
-          <h2 className="text-center text-3xl text-gray-200 font-bold">
-            Welcome Back!
-          </h2>
-          <p className=" text-xl text-center text-gray-100 w-80">
-            To keep conected with us,please login with your information
-          </p>
 
+        <div className="hidden md:flex flex-col items-center justify-center w-1/2 bg-gradient-to-br from-gray-900 to-gray-600 p-8 text-white text-center">
+          <h2 className="text-3xl font-bold mb-4">Welcome Back!</h2>
+          <p className="mb-6 text-lg max-w-xs">
+            To keep connected with us, please login with your information.
+          </p>
           <button className="holographic-btn p-2 rounded-lg border text-white w-32">
-            <Link href={"login"}>SIGN IN</Link>
+            <Link href="/login">SIGN IN</Link>
           </button>
         </div>
       </div>

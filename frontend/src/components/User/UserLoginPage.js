@@ -57,6 +57,7 @@ function UserLoginPage() {
           return;
         }
       } else if (error.request) {
+        console.error(error.request)
         toast.error("No response from server. Check your network or server.", {
           autoClose: 1500,
         });
@@ -69,86 +70,89 @@ function UserLoginPage() {
   }
 
   return (
-    <div>
-      <div className="flex flex-col md:flex-row m-10 md:mx-16 lg:mx-28 lg:my-28 border-[1px] rounded-sm ">
+    <div className="bg-[#1E293B] min-h-screen flex items-center justify-center px-4">
+      <div className="flex flex-col md:flex-row w-full max-w-4xl h-[400px] border border-gray-600 rounded-md overflow-hidden shadow-md">
         <ToastContainer />
-        <div className="p-2 flex-1">
-          <h2 className="text-center text-3xl text-gray-800">Sign In</h2>
-          <form
-            className="flex flex-col p-4 md:p-5 lg:p-16"
-            onSubmit={handleSubmit(UserLogin)}
-          >
-            <label className="flex p-1 border">
-              <MdEmail className="text-gray-400 mt-2.5" />
-              <input
-                className="w-full p-2 focus:outline-none"
-                type="text"
-                placeholder="Email"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^(?:[a-zA-Z0-9]+@(gmail\.com|proton\.me))$/,
-                    message: "Invalid email address",
-                  },
-                })}
-              />
-            </label>
-            {errors.email && (
-              <p className="font-thin text-sm text-red-600">
-                {errors.email.message}
-              </p>
-            )}
-            {emailMessage && (
-              <p className="font-thin text-sm text-red-600">{emailMessage}</p>
-            )}
 
-            <label className="flex p-1 border mt-4">
-              <RiLockPasswordLine className="text-gray-400 mt-2.5" />
-              <input
-                className="w-full p-2 focus:outline-none"
-                type="text"
-                placeholder="Password"
-                {...register("password", {
-                  required: "Password is Required",
-                  message: "Password is Required",
-                })}
-              />
-            </label>
-            {passwordMessage && (
-              <span className="font-thin text-sm text-red-600">
-                {passwordMessage}
-              </span>
-            )}
-            {errors.password && (
-              <span className="font-thin text-sm text-red-600">
-                {errors.password.message}
-              </span>
-            )}
-            <div className="flex justify-between mt-4 font-thin text-sm">
-              <label className="flex text-left gap-1">
+        <div className="w-full md:w-1/2 bg-[#1E293B] p-8 md:p-12">
+          <h2 className="text-center text-3xl text-white font-semibold mb-8">
+            Sign In
+          </h2>
+
+          <form onSubmit={handleSubmit(UserLogin)} className="space-y-5">
+            <div>
+              <label className="flex items-center gap-2 bg-[#334155] text-white px-3 py-2 rounded-md">
+                <MdEmail className="text-gray-400" />
                 <input
-                  className="cursor-pointer"
+                  className="w-full bg-transparent outline-none placeholder:text-gray-400"
+                  type="text"
+                  placeholder="Email"
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value:  /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "Invalid email address",
+                    },
+                  })}
+                />
+              </label>
+              {errors.email && (
+                <p className="text-sm text-red-400 mt-1">
+                  {errors.email.message}
+                </p>
+              )}
+              {emailMessage && (
+                <p className="text-sm text-red-400 mt-1">{emailMessage}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="flex items-center gap-2 bg-[#334155] text-white px-3 py-2 rounded-md">
+                <RiLockPasswordLine className="text-gray-400" />
+                <input
+                  className="w-full bg-transparent outline-none placeholder:text-gray-400"
+                  type="password"
+                  placeholder="Password"
+                  {...register("password", {
+                    required: "Password is Required",
+                  })}
+                />
+              </label>
+              {passwordMessage && (
+                <p className="text-sm text-red-400 mt-1">{passwordMessage}</p>
+              )}
+              {errors.password && (
+                <p className="text-sm text-red-400 mt-1">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            <div className="flex justify-between text-sm text-gray-300">
+              <label className="flex items-center gap-1">
+                <input
                   type="checkbox"
-                  onChange={() => setRememberMe((state) => !state)}
+                  onChange={() => setRememberMe((prev) => !prev)}
+                  className="accent-teal-500"
                 />
                 Remember Me
               </label>
-              <p className="text-right">Forget Password?</p>
+              <p className="cursor-pointer hover:underline">Forgot Password?</p>
             </div>
-            <button className="rounded bg-teal-500 text-white font-mono p-2 mt-4 mb-4">
+
+            <button className="w-full bg-gray-900 hover:bg-gray-700 text-white font-semibold py-2 rounded-md transition-all">
               SIGN IN
             </button>
           </form>
         </div>
-        <div className="hidden md:flex flex-col flex-1 items-center justify-center bg-teal-400 p-4 gap-4 rounded-r-sm">
-          <h2 className="text-center text-3xl text-gray-200 font-bold">
-            New Here!
-          </h2>
-          <p className=" text-xl text-center text-gray-100 w-80">
-            To keep conected with us,please signup with your information
+
+        <div className="hidden md:flex flex-col items-center justify-center w-1/2 bg-gradient-to-br from-gray-900 to-gray-600 p-8 text-white text-center">
+          <h2 className="text-3xl font-bold mb-4">New Here?</h2>
+          <p className="mb-6 text-lg max-w-xs">
+            To keep connected with us, please sign up with your information.
           </p>
           <button className="holographic-btn p-2 rounded-lg border text-white w-32">
-            <Link href={"signup"}>SIGN UP</Link>
+            <Link href="/signup">SIGN UP</Link>
           </button>
         </div>
       </div>

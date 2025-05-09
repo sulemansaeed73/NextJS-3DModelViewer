@@ -34,10 +34,10 @@ function Header() {
         <Link href={"/"} className="hover:text-gray-400 transition py-1">
           Home
         </Link>
-        <Link href={"/about"} className="hover:text-gray-400 transition py-1">
+        <Link href={"/"} className="hover:text-gray-400 transition py-1">
           About
         </Link>
-        <Link href={"/contact"} className="hover:text-gray-400 transition py-1">
+        <Link href={"/"} className="hover:text-gray-400 transition py-1">
           Contact
         </Link>
 

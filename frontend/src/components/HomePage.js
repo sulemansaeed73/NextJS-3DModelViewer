@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import LandingPage from "./LandingPage";
-import TwoDModel from "@/components/assets/AutoCAD2D.webp";
-import ThreeDModel from "@/components/assets/3D5.webp";
+// import TwoDModel from "@/components/assets/AutoCAD2D.webp";
+// import ThreeDModel from "@/components/assets/3D5.webp";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 function Home() {
@@ -23,9 +23,9 @@ function Home() {
             </h2>
             <Image
               className="rounded-lg border-2 border-[#3B82F6] hover:scale-105 transform transition-transform duration-300"
-              width={350}
+              width={450}
               height={550}
-              src={TwoDModel}
+              src={'/assets/AutoCAD2D.webp'}
               alt="2D Model"
             />
             <p className="mt-6 text-gray-300 text-lg leading-relaxed">
@@ -35,7 +35,7 @@ function Home() {
             </p>
             <button
               onClick={() => router.push("uploadautocad")}
-              className="w-full mt-6 py-3 text-white text-lg font-semibold bg-[#3B82F6] hover:bg-[#06B6D4] rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
+              className="w-full mt-6 py-3 text-white text-lg font-semibold bg-[#1a293b] hover:bg-[#0c0e2e] rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
             >
               Get Started
             </button>
@@ -47,9 +47,9 @@ function Home() {
             </h2>
             <Image
               className="rounded-lg border-2 border-[#3B82F6] hover:scale-105 transform transition-transform duration-300"
-              width={350}
+              width={450}
               height={550}
-              src={ThreeDModel}
+              src={'/assets/3D5.webp'}
               alt="3D Model"
             />
             <p className="mt-6 text-gray-300 text-lg leading-relaxed">
@@ -59,7 +59,7 @@ function Home() {
             </p>
             <button
               onClick={() => router.push("uploadautocad")}
-              className="w-full mt-6 py-3 text-white text-lg font-semibold bg-[#3B82F6] hover:bg-[#06B6D4] rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
+              className="w-full mt-6 py-3 text-white text-lg font-semibold bg-[#1a293b] hover:bg-[#0c0e2e] rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
             >
               Get Started
             </button>
